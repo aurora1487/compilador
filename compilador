@@ -1,0 +1,32 @@
+package codigo;     //aqui estan incluidos todos los paquetes
+import static codigo.Tokens.*;   //contiene todos los tokens del analizador lexico
+%%    //en tre los signos de % se encuentran todas las declaraciones que se ocuparan
+%class Lexer
+%type Tokens
+L=[a-zA-Z_]+      //lenguaje que incluye letas de la A a la Z minusculas y mayusculas
+D=[0-9]+          // enumeracion del 0 al 9 el signo de "+" lea o analise hasta que se encuentre un espacio
+espacio=[ ,\t,\r,\n]+       //son los espacios que el analizador ignorara
+%{
+    public String lexeme;
+%}
+%% 
+// se encuentran todas las palabras reservadas que se utilizaran en el codigo 
+
+int |
+if |         
+else |
+while {lexeme=yytext(); return Reservadas;}
+{espacio} {/*Ignore*/}
+"//".* {/*Ignore*/}
+"=" {return Igual;}
+"+" {return Suma;}
+"-" {return Resta;}
+"*" {return Multiplicacion;}
+"/" {return Division;}
+
+// son las reglas sintaxicas que nos permitiran analizar los identificadores
+
+
+{L}({L}|{D})* {lexeme=yytext(); return Identificador;}
+("(-"{D}+")")|{D}+ {lexeme=yytext(); return Numero;}
+ . {return ERROR;}
